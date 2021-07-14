@@ -1,56 +1,55 @@
 #include <iostream>
 #include <vector>
 
-template <typename T>
+template<typename T>
 class UniquePtr {
 private:
-    T* a;
-    UniquePtr(const UniquePtr &uniquePtr);
+    T *a;
 public:
-    UniquePtr(const UniquePtr&& uniquePtr);
+    UniquePtr(const UniquePtr &uniquePtr) = delete;
+    UniquePtr(const UniquePtr &&uniquePtr) noexcept;
 
-    explicit UniquePtr<T>(T* a) {
+    explicit UniquePtr(T *a) {
         this->a = a;
     }
 
+    ~UniquePtr() {
+        delete a;
+    }
 };
 
 template<typename T>
-UniquePtr<T>::UniquePtr(const UniquePtr &&uniquePtr) {
-
+UniquePtr<T>::UniquePtr(const UniquePtr &&uniquePtr) noexcept:a(uniquePtr.a) {
 }
 
 
-class DummyLogClass
-{
+class DummyLogClass {
 public:
-    DummyLogClass()
-    {
+    DummyLogClass() {
         std::cout << "DummyLogClass()\n";
     }
-    DummyLogClass(const DummyLogClass&)
-    {
+
+    DummyLogClass(const DummyLogClass &) {
         std::cout << "DummyLogClass(const DummyLogClass&)\n";
     }
-    ~DummyLogClass()
-    {
+
+    ~DummyLogClass() {
         std::cout << "~DummyLogClass\n";
     }
 };
 
-UniquePtr<DummyLogClass> getObject()
-{
-    UniquePtr<DummyLogClass> ptr{ new DummyLogClass() };
+UniquePtr<DummyLogClass> getObject() {
+    UniquePtr<DummyLogClass> ptr{new DummyLogClass()};
     return ptr; //OK if NRVO works. Compile error otherwise.
 }
 
 int main() {
     {
-        UniquePtr<DummyLogClass> ptr{ new DummyLogClass() }; // DummyLogClass()
+        UniquePtr<DummyLogClass> ptr{new DummyLogClass()}; // DummyLogClass()
     } // ~DummyLogClass()
 
     {
-        UniquePtr<DummyLogClass> ptr{ new DummyLogClass() };
+        UniquePtr<DummyLogClass> ptr{new DummyLogClass()};
         //UniquePtr<DummyLogClass> ptr1{ ptr }; //Compile error;
         //UniquePtr<DummyLogClass> ptr1 = ptr;  //Compile error;
     }
@@ -61,8 +60,7 @@ int main() {
 
     {
         std::vector<UniquePtr<DummyLogClass>> vec; // OK
-        for (int i = 0; i < 1000000; ++i)
-        {
+        for (int i = 0; i < 1000000; ++i) {
             vec.push_back(UniquePtr<DummyLogClass>{new DummyLogClass()}); // OK
         }
     }
