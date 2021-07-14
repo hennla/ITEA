@@ -7,7 +7,8 @@ private:
     T *a;
 public:
     UniquePtr(const UniquePtr &uniquePtr) = delete;
-    UniquePtr(const UniquePtr &&uniquePtr) noexcept;
+
+    UniquePtr(UniquePtr &&uniquePtr) noexcept;
 
     explicit UniquePtr(T *a) {
         this->a = a;
@@ -19,7 +20,8 @@ public:
 };
 
 template<typename T>
-UniquePtr<T>::UniquePtr(const UniquePtr &&uniquePtr) noexcept:a(uniquePtr.a) {
+UniquePtr<T>::UniquePtr(UniquePtr &&uniquePtr) noexcept:a(uniquePtr.a) {
+    uniquePtr.a = nullptr;
 }
 
 
