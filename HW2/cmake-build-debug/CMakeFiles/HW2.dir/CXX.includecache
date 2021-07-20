@@ -11,4 +11,8 @@ algorithm
 -
 iostream
 -
+cstring
+-
+cmath
+-
 
