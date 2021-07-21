@@ -27,7 +27,7 @@ template<class T>
 class SymbolArray;
 
 template<class T>
-wostream &operator<<(wostream &out, const SymbolArray<T> &obj);
+wostream &operator<<(wostream &out, const SymbolArray<T> &_symbol_array);
 
 template<class T>
 class SymbolArray {
@@ -211,8 +211,8 @@ public:
 };
 
 template<class T>
-wostream &operator<<(wostream &out, const SymbolArray<T> &obj) {
-    for (auto elem : obj) {
+wostream &operator<<(wostream &out, const SymbolArray<T> &_symbol_array) {
+    for (auto elem : _symbol_array) {
         out << elem;
     }
     return out;
