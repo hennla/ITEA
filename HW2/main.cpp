@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstring>
 #include <cmath>
+#include <locale>
 /*
  Заімплементувати просту (але робочу) реалізацію для динамічного масива символів, котрий надаватиме ітератори для роботи з алгоритмами STL.
 
@@ -96,7 +97,7 @@ public:
         return _array[index];
     }
 
-    void append(const T _elem) {
+    virtual void append(const T _elem) {
         if (_count == _capacity) {
             resize();
         }
@@ -126,7 +127,7 @@ public:
     }
 
     SymbolArray<T> operator+(SymbolArray<T> &_symbol_array) {
-        uint32_t _new_capacity = ceil(double (_count + _symbol_array._count) / 10) * 10;
+        uint32_t _new_capacity = ceil(double(_count + _symbol_array._count) / 10) * 10;
         SymbolArray<T> _new_symbol_array(_new_capacity);
         memcpy(_new_symbol_array._array, _array, _count * sizeof(T));
         memcpy(_new_symbol_array._array + _count, _symbol_array._array, _symbol_array._count * sizeof(T));
@@ -135,19 +136,15 @@ public:
     }
 
     void operator+=(SymbolArray<T> &_symbol_array) {
-        uint32_t _new_capacity = ceil(double (_count + _symbol_array._count) / 10) * 10;
+        uint32_t _new_capacity = ceil(double(_count + _symbol_array._count) / 10) * 10;
         if (_new_capacity >= _capacity) {
             resize(_new_capacity - _capacity);
         }
         memcpy(_array + _count, _symbol_array._array, _symbol_array._count * sizeof(T));
-        _count +=_symbol_array._count;
+        _count += _symbol_array._count;
     }
 
-    friend wostream &operator
-    <<<>(
-    wostream &out,
-    const SymbolArray<T> &obj
-    );
+    friend wostream &operator<<<>(wostream &out, const SymbolArray<T> &_symbol_array);
 
     class Iterator {
     private:
@@ -220,8 +217,11 @@ wostream &operator<<(wostream &out, const SymbolArray<T> &_symbol_array) {
 
 
 int main() {
-    SymbolArray<char> symbolArray(10);
+    setlocale(LC_ALL, "");
+
+    SymbolArray<wchar_t> symbolArray(10);
     //test append
+    symbolArray.append(L'г');
     symbolArray.append('a');
     symbolArray.append('b');
     symbolArray.append('c');
@@ -231,7 +231,7 @@ int main() {
     symbolArray.append('i');
     symbolArray.append('h');
     symbolArray.append('g');
-    symbolArray.append('f');
+
 
     wcout << symbolArray << endl;
     //test resize
@@ -246,14 +246,14 @@ int main() {
     wcout << symbolArray << endl;
 
     //test += override
-    SymbolArray<char> symbolArray0(10);
+    SymbolArray<wchar_t> symbolArray0(10);
     symbolArray0.append('1');
     symbolArray0.append('9');
-    symbolArray+=symbolArray0;
+    symbolArray += symbolArray0;
     wcout << symbolArray << endl;
 
     //test + override
-    SymbolArray<char> ss = symbolArray + symbolArray0;
+    SymbolArray<wchar_t> ss = symbolArray + symbolArray0;
     wcout << ss << endl;
 
     return 0;
