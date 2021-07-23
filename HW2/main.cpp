@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cstring>
+#include <cwchar>
 #include <cmath>
 #include <locale>
 /*
@@ -23,12 +24,6 @@
  */
 using namespace std;
 
-//https://question-it.com/questions/2117222/klass-shablona-dinamicheskogo-massiva-problema-s-funktsiej-ostream-operator-friend
-template<class T>
-class SymbolArray;
-
-template<class T>
-wostream &operator<<(wostream &out, const SymbolArray<T> &_symbol_array);
 
 template<class T>
 class SymbolArray {
@@ -48,7 +43,13 @@ private:
         memcpy(_array, _tmp_array, _old_capacity * sizeof(T));
         cout << "DEBUG: call resize. New capacity :" << capacity() << endl;
     }
+    uint32_t _strlen(const wchar_t * _Str) {
+        return wcslen(_Str);
+    }
 
+    uint32_t _strlen(const char * _Str) {
+        return strlen(_Str);
+    }
 public:
     class Iterator;
 
@@ -97,12 +98,19 @@ public:
         return _array[index];
     }
 
-    virtual void append(const T _elem) {
+    void append(const T _elem) {
         if (_count == _capacity) {
             resize();
         }
         _array[_count] = _elem;
         _count++;
+    }
+
+    void append(const T* _elem) {
+        uint32_t len = _strlen(_elem);
+        for(auto i = 0; i< len; i++) {
+            append(_elem[i]);
+        }
     }
 
     void erase(uint32_t index) {
@@ -144,7 +152,12 @@ public:
         _count += _symbol_array._count;
     }
 
-    friend wostream &operator<<<>(wostream &out, const SymbolArray<T> &_symbol_array);
+    friend wostream &operator<<(wostream &out, const SymbolArray<T> &_symbol_array) {
+        for (auto elem : _symbol_array) {
+            out << elem;
+        }
+        return out;
+    }
 
     class Iterator {
     private:
@@ -207,31 +220,21 @@ public:
     };
 };
 
-template<class T>
-wostream &operator<<(wostream &out, const SymbolArray<T> &_symbol_array) {
-    for (auto elem : _symbol_array) {
-        out << elem;
-    }
-    return out;
-}
-
-
 int main() {
     setlocale(LC_ALL, "");
 
-    SymbolArray<wchar_t> symbolArray(10);
+    SymbolArray<char> symbolArray(10);
     //test append
-    symbolArray.append(L'г');
     symbolArray.append('a');
     symbolArray.append('b');
     symbolArray.append('c');
     symbolArray.append('d');
     symbolArray.append('e');
-    symbolArray.append('j');
-    symbolArray.append('i');
-    symbolArray.append('h');
+    symbolArray.append('f');
     symbolArray.append('g');
-
+    symbolArray.append('h');
+    symbolArray.append('i');
+    symbolArray.append("jklmnopqr");
 
     wcout << symbolArray << endl;
     //test resize
@@ -243,17 +246,18 @@ int main() {
 
     //test std
     std::sort(symbolArray.begin(), symbolArray.end());
+    cout << "DEBUG std::sort result" << endl;
     wcout << symbolArray << endl;
 
     //test += override
-    SymbolArray<wchar_t> symbolArray0(10);
+    SymbolArray<char> symbolArray0(10);
     symbolArray0.append('1');
     symbolArray0.append('9');
     symbolArray += symbolArray0;
     wcout << symbolArray << endl;
 
     //test + override
-    SymbolArray<wchar_t> ss = symbolArray + symbolArray0;
+    SymbolArray<char> ss = symbolArray + symbolArray0;
     wcout << ss << endl;
 
     return 0;
