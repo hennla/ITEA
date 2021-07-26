@@ -19,7 +19,7 @@ public:
 
     FileException(string error) : error(error){}
 
-    const char *what() const noexcept { return error.c_str(); } // C++11 и выше
+    const char *what() const noexcept { return error.c_str(); } // C++11 and higher
 private:
     string error;
 };
