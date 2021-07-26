@@ -6,13 +6,19 @@
 #include "mystring.h"
 #include <cstdlib>
 
+mywstring::mywstring(uint32_t capacity) : symbol_array(capacity) {}
 
-SymbolArray<wchar_t> &mywstring::convert_symbols(const SymbolArray<char> symbol_array) {
+symbol_array<wchar_t> &mywstring::convert_symbols(const symbol_array<char> _symbol_array) {
     return *this;
 }
 
-SymbolArray<char> &mywstring::convert_symbols(const SymbolArray<wchar_t> symbol_array) {
+symbol_array<char> &mywstring::convert_symbols(const symbol_array<wchar_t> _symbol_array) {
     mystring _mystring;
-    _mystring.append('a');
+
+
     return _mystring;
 }
+
+
+
+

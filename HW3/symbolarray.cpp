@@ -5,20 +5,17 @@
 #include <iostream>
 #include <cstring>
 #include <cmath>
-#include "mystring.h"
-#include "mywstring.h"
 
 using namespace std;
 
-//https://question-it.com/questions/2117222/klass-shablona-dinamicheskogo-massiva-problema-s-funktsiej-ostream-operator-friend
 template<class T>
-class SymbolArray;
+class symbol_array;
 
 template<class T>
-wostream &operator<<(wostream &out, const SymbolArray<T> &_symbol_array);
+wostream &operator<<(wostream &out, const symbol_array<T> &_symbol_array);
 
 template<class T>
-class SymbolArray {
+class symbol_array {
 private:
     uint32_t _capacity;
     uint32_t _count;
@@ -39,25 +36,25 @@ private:
 public:
     class Iterator;
 
-     explicit SymbolArray(uint32_t _capacity = 10) : _capacity(_capacity) {
+     explicit symbol_array(uint32_t _capacity = 10) : _capacity(_capacity) {
         _count = 0;
         _array = new T[_capacity];
         memset(_array, 0, _capacity * sizeof(T));
         cout << "DEBUG: constructor: capacity = " << capacity() << endl;
     }
 
-    SymbolArray(const SymbolArray &other) {
+    symbol_array(const symbol_array &other) {
         const auto newSize = std::min(sizeof(T) * other._capacity, sizeof(T) * _capacity);
         memcpy(_array, other._array, newSize);
         _capacity = other._capacity;
         _count = other._count;
     }
 
-    SymbolArray(SymbolArray &&symbolArray) noexcept: _array(symbolArray._array),
-                                                     _capacity(symbolArray._capacity),
-                                                     _count(symbolArray._count) {}
+    symbol_array(symbol_array &&symbolArray) noexcept: _array(symbolArray._array),
+                                                       _capacity(symbolArray._capacity),
+                                                       _count(symbolArray._count) {}
 
-    ~SymbolArray() {
+    virtual ~symbol_array() {
         delete[] _array;
     }
 
@@ -94,12 +91,12 @@ public:
 
     virtual void append(const T* _elem) {}
 
-    virtual SymbolArray<wchar_t>& convert_symbols(const SymbolArray<char> symbol_array) {
-        SymbolArray<wchar_t> return_value;
+    virtual symbol_array<wchar_t>& convert_symbols(const symbol_array<char> _symbol_array) {
+        symbol_array<wchar_t> return_value;
         return return_value;
      };
-    virtual SymbolArray<char>& convert_symbols(const SymbolArray<wchar_t> symbol_array) {
-        SymbolArray<char> return_value;
+    virtual symbol_array<char>& convert_symbols(const symbol_array<wchar_t> _symbol_array) {
+        symbol_array<char> return_value;
         return return_value;
     };
 
@@ -124,16 +121,16 @@ public:
         return at(index);
     }
 
-    SymbolArray<T> operator+(SymbolArray<T> &_symbol_array) {
+    symbol_array<T> operator+(symbol_array<T> &_symbol_array) {
         uint32_t _new_capacity = ceil(double (_count + _symbol_array._count) / 10) * 10;
-        SymbolArray<T> _new_symbol_array(_new_capacity);
+        symbol_array<T> _new_symbol_array(_new_capacity);
         memcpy(_new_symbol_array._array, _array, _count * sizeof(T));
         memcpy(_new_symbol_array._array + _count, _symbol_array._array, _symbol_array._count * sizeof(T));
         _new_symbol_array._count = _count + _symbol_array._count;
         return _new_symbol_array;
     }
 
-    void operator+=(SymbolArray<T> &_symbol_array) {
+    void operator+=(symbol_array<T> &_symbol_array) {
         uint32_t _new_capacity = ceil(double (_count + _symbol_array._count) / 10) * 10;
         if (_new_capacity >= _capacity) {
             resize(_new_capacity - _capacity);
@@ -145,7 +142,7 @@ public:
     friend wostream &operator
     <<<>(
     wostream &out,
-    const SymbolArray<T> &obj
+    const symbol_array<T> &obj
     );
 
     class Iterator {
@@ -210,7 +207,7 @@ public:
 };
 
 template<class T>
-wostream &operator<<(wostream &out, const SymbolArray<T> &_symbol_array) {
+wostream &operator<<(wostream &out, const symbol_array<T> &_symbol_array) {
     for (auto elem : _symbol_array) {
         out << elem;
     }

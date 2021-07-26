@@ -5,19 +5,13 @@
 #include "mystring.h"
 #include "mywstring.h"
 
-SymbolArray<char> & mystring::convert_symbols(const SymbolArray<wchar_t> symbol_array) {
+symbol_array<char> & mystring::convert_symbols(const symbol_array<wchar_t> _symbol_array) {
     return *this;
 }
 
-SymbolArray<wchar_t> & mystring::convert_symbols(const SymbolArray<char> symbol_array) {
+symbol_array<wchar_t> & mystring::convert_symbols(const symbol_array<char>_symbol_array) {
     mywstring _mywstring;
-    for(auto elem : *this) {
-        if (elem < 128) {
-            _mywstring.append(elem);
-        } else {
-            _mywstring.append('?');
-        }
-    }
+
     return _mywstring;
 }
 

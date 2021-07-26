@@ -9,11 +9,11 @@
 #include "mywstring.h"
 #include "symbolarray.cpp"
 
-class mystring : public SymbolArray<char>{
+class mystring : public symbol_array<char>{
 public:
-    virtual SymbolArray<wchar_t>& convert_symbols(const SymbolArray<char> symbol_array) override;
+    virtual symbol_array<wchar_t>& convert_symbols(const symbol_array<char> _symbol_array) override;
 
-    virtual SymbolArray<char>& convert_symbols(const SymbolArray<wchar_t> symbol_array) override;
+    virtual symbol_array<char>& convert_symbols(const symbol_array<wchar_t> _symbol_array) override;
 };
 
 
