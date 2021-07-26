@@ -18,12 +18,13 @@ public:
         this->error.append(strerror(errno));
     }
 
-    explicit FileException(string error) : error(std::move(error)){}
+    explicit FileException(string error) : error(std::move(error)) {}
 
     const char *what() const noexcept { return error.c_str(); } // C++11 and higher
 private:
     string error;
 };
+
 template<class T>
 class File {
 public:
@@ -49,6 +50,7 @@ public:
         if (file != nullptr) {
             fflush(file);
             fclose(file);
+            cout<<"~File()"<<endl;
         }
     }
 
@@ -76,18 +78,47 @@ private:
 };
 
 int main() {
-    char * buffer = new char [10];
-    try {
-        File<char> file("D:\\1C\\buffer.txt", READ_WRITE);
-        file.read(buffer, 11, 0);
-        cout<<buffer<<endl;
-        string writeBuffer = "write_test";
-        file.write(const_cast<char *>(writeBuffer.c_str()), writeBuffer.length());
-        cout<<buffer<<endl;
+    char *buffer = new char[10];
+    //test 1
+    {
+        try {
+            File<char> file("D:\\1C\\buffer.txt", WRITE);
+            string writeBuffer = "write_test";
+            file.write(const_cast<char *>(writeBuffer.c_str()), writeBuffer.length());
+            file.read(buffer, 10, 0);
+        }
+        catch (FileException e) {
+            cout << e.what() << endl;
+        }
     }
-    catch (FileException e) {
-        cout << e.what() << endl;
+    //test 2
+    {
+        try {
+            File<char> file("D:\\1C\\buffer.txt", READ);
+            file.write(buffer, 10);
+            int count = file.read(buffer, 10, 0);
+            if (count > 0) {
+                cout << buffer << endl;
+            }
+        }
+        catch (FileException e) {
+            cout << e.what() << endl;
+        }
     }
-    delete buffer;
+    {
+        try {
+            File<char> file("D:\\1C\\buffer.txt", READ_WRITE);
+            int count = file.read(buffer, 11, 0);
+            if (count > 0) {
+                cout << buffer << endl;
+            }
+            string writeBuffer = "read_write_test";
+            file.write(const_cast<char *>(writeBuffer.c_str()), writeBuffer.length());
+        }
+        catch (FileException e) {
+            cout << e.what() << endl;
+        }
+    }
+    delete[] buffer;
     return 0;
 }
