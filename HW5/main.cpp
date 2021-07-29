@@ -10,7 +10,7 @@ public:
         mediaSharingVector.push_back(&mediaSharing);
     }
 
-    void print(std::string mediaString) {
+    void print(const std::string& mediaString) {
         for (auto &stream : mediaSharingVector) {
             *stream << transformMedia(mediaString) << std::endl;
         }
@@ -50,24 +50,24 @@ protected:
 
 class ZMI {
 public:
-    void addZmi(Media &media) {
-        mediaVector.push_back(&media);
+    void addZmi(const std::shared_ptr<Media>& media) {
+        mediaVector.push_back(media);
     }
 
-    friend ZMI operator<<(ZMI zmi, std::string mediaString) {
-        for (auto media : zmi.mediaVector) {
+    friend ZMI operator<<(ZMI zmi, const std::string& mediaString) {
+        for (const auto& media : zmi.mediaVector) {
             media->print(mediaString);
         }
         return zmi;
     }
 
 private:
-    std::vector<Media *> mediaVector;
+    std::vector<std::shared_ptr<Media>> mediaVector;
 
 };
 
 int main() {
-    std::ofstream fileOut("D:\\GIT\\ITEA\\HW5\\SomeNews.txt");
+    std::ofstream fileOut(R"(D:\GIT\ITEA\HW5\SomeNews.txt)");
     UpperRegisterMedia upperRegisterMedia;
     upperRegisterMedia.addMediaSharing(std::cout);
     upperRegisterMedia.addMediaSharing(std::cerr);
@@ -82,9 +82,9 @@ int main() {
     originalMedia.addMediaSharing(std::cout);
 
     ZMI zmi;
-    zmi.addZmi(upperRegisterMedia);
-    zmi.addZmi(underscoreSplitterMedia);
-    zmi.addZmi(originalMedia);
+    zmi.addZmi(std::make_shared<UpperRegisterMedia>(upperRegisterMedia));
+    zmi.addZmi(std::make_shared<UnderscoreSplitterMedia>(underscoreSplitterMedia));
+    zmi.addZmi(std::make_shared<OriginalMedia>(originalMedia));
     //Breaking news. Robbery at the bank
     zmi << "Breaking news. Robbery at the bank";
     return 0;
