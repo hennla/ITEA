@@ -11,7 +11,7 @@
 
 class mywstring : public symbol_array<wchar_t> {
 public:
-    mywstring(uint32_t capacity = 10):symbol_array(capacity);
+    mywstring(uint32_t capacity = 10):symbol_array(capacity){};
 
     virtual symbol_array<wchar_t>& convert_symbols(const symbol_array<char> _symbol_array) override;
 
