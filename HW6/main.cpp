@@ -5,13 +5,13 @@
 #include <algorithm>
 
 using namespace std;
-
+/*
 void print_elements(string element) {
     cout<<element<<endl;
 }
 
 void (*printElements)(string) = print_elements;
-
+*/
 int main() {
     string fStr;
     ifstream file("D:/GIT/ITEA/HW6/test.txt");
