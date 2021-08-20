@@ -1,0 +1,3 @@
+D:/GIT/ITEA/HW5/cmake-build-debug/CMakeFiles/HW5.dir
+D:/GIT/ITEA/HW5/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/GIT/ITEA/HW5/cmake-build-debug/CMakeFiles/rebuild_cache.dir

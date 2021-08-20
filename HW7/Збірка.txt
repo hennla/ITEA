@@ -1,0 +1,4 @@
+binary:MyFirstTry
+functions.ITEA_cpp
+functions.ITEA_h
+main.ITEA_cpp
