@@ -36,9 +36,9 @@ int main() {
 
     std::thread consumer_thread(consume);
 
-    for (int i = 0; i < max_repeat; i++) {
+    for (int i = 1; i <= max_repeat; i++) {
+        if (i == max_repeat) interrupted = true;
         produce();
-        if (i == max_repeat - 1) interrupted = true;
         print = true;
         increment = false;
         cv.notify_one();
