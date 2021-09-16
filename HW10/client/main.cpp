@@ -20,6 +20,31 @@ void eraseText(int cnt) {
     }
 }
 
+bool request_name(SOCKET client_socket) {
+    char name[MAX_LEN], str[MAX_LEN];
+
+    std::cout << "Enter your name : ";
+    std::cin.getline(name, MAX_LEN);
+    std::string message("MY_NAME::");
+    message.append(name);
+    send(client_socket, message.c_str(), message.size(), 0);
+    while (true) {
+        int bytes_received = recv(client_socket, str, sizeof(str), 0);;
+
+        if (bytes_received <= 0)
+            continue;
+        if (strcmp(str, "#SET_NAME_ERROR::") == 0) {
+            std::cout << "This name already use, please enter another name!" << std::endl;
+            return false;
+        } else if (strcmp(str, "#SET_NAME_OK::") == 0) {
+            return true;
+        } else {
+            std::cout << "Set name error, please try again!" << std::endl;
+            return false;
+        }
+    }
+
+}
 // Send message to everyone
 void send_message(SOCKET client_socket) {
     while (true) {
@@ -60,7 +85,8 @@ void recv_message(SOCKET client_socket) {
             t_send.detach();
             closesocket(client_socket);
             continue;
-        } else if (strcmp(name, "#NULL") != 0)
+        }
+        else if (strcmp(name, "#NULL") != 0)
             std::cout << name << " : " << str << std::endl;
         else
             std::cout << str << std::endl;
@@ -100,12 +126,7 @@ int main() {
 
     std::cout << "  ====== Welcome to the chat-room ======   " << std::endl;
 
-    char name[MAX_LEN];
-    std::cout << "Enter your name : ";
-    std::cin.getline(name, MAX_LEN);
-    std::string message("MY_NAME::");
-    message.append(name);
-    send(client_socket, message.c_str(), message.size(), 0);
+    while (!request_name(client_socket));
 
     std::thread t1(send_message, client_socket);
     std::thread t2(recv_message, client_socket);

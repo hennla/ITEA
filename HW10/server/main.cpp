@@ -20,12 +20,23 @@ unsigned int clients_count = 0;
 std::mutex console_mtx, clients_mtx;
 std::atomic<bool> stop_flag = false;
 
-void set_name(int id, std::string name) {
+bool set_name(int id, std::string name) {
+    bool return_val = true;
     for (auto &client: clients) {
-        if (client.id == id) {
-            client.name = name;
+        if (client.id != id && client.name == name) {
+            return_val = false;
+            break;
         }
     }
+    if (return_val) {
+        for (auto &client: clients) {
+            if (client.id == id) {
+                client.name = name;
+                break;
+            }
+        }
+    }
+    return return_val;
 }
 
 
@@ -60,7 +71,7 @@ void end_connection(int id) {
 }
 
 void handle_client(SOCKET client_socket, int id) {
-    char  str[MAX_LEN];
+    char str[MAX_LEN];
     std::string name{};
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -75,13 +86,19 @@ void handle_client(SOCKET client_socket, int id) {
             shared_print(message);
             end_connection(id);
             break;
-        } else if (in_message.substr(0,9) == "MY_NAME::") {
+        } else if (in_message.substr(0, 9) == "MY_NAME::") {
             name = in_message.substr(9);
-            set_name(id, name);
-            std::string welcome_message = name + " has joined";
-            broadcast_message("#NULL", id);
-            broadcast_message(welcome_message, id);
-            shared_print(welcome_message);
+            if (set_name(id, name)) {
+                std::string welcome_message = name + " has joined";
+                broadcast_message("#NULL", id);
+                broadcast_message(welcome_message, id);
+                shared_print(welcome_message);
+                std::string error_message = "#SET_NAME_OK::";
+                send(client_socket, error_message.c_str(), 15, 0);
+            } else {
+                std::string error_message = "#SET_NAME_ERROR::";
+                send(client_socket, error_message.c_str(), 18, 0);
+            }
             continue;
         }
         broadcast_message(name, id);
