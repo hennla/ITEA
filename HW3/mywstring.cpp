@@ -4,20 +4,22 @@
 
 #include "mywstring.h"
 
-
-mywstring mywstring::convert_symbols(char a) {
+SymbolArray<wchar_t>& mywstring::convert_symbols(const SymbolArray<char>& symbol_array) {
     return *this;
 }
+ const SymbolArray<char>& mywstring::convert_symbols(const SymbolArray<wchar_t>& symbol_array) {
+     const wchar_t* warray = this->to_array();
+     char * array = new char[this->size()];
+     uint32_t length = std::wcstombs(array, warray, this->size());
+     mystring _mystring{array, length};
+     delete[] array;
 
-mystring mywstring::convert_symbols(wchar_t a) {
-    char * n_array = new char[this->capacity()];
-    if (std::wcstombs(n_array, this->to_array(), this->capacity()) == -1) {
-        throw runtime_error{"Conversion error"};
-    };
-    mystring mystr{n_array, this->capacity()};
-
-    return mystr;
+     return std::move(_mystring);
 }
+
+mywstring::mywstring(const SymbolArray<wchar_t> &other) : SymbolArray(other) {}
+
+mywstring::mywstring(SymbolArray<wchar_t> &&symbolArray) : SymbolArray(symbolArray) {}
 
 
 

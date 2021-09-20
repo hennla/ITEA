@@ -1,5 +1,5 @@
-#ifndef HW3_SYMBOLARRAY_CPP
-#define HW3_SYMBOLARRAY_CPP
+#ifndef HW3_SYMBOLARRAY_H
+#define HW3_SYMBOLARRAY_H
 
 #include <algorithm>
 #include <iostream>
@@ -8,14 +8,14 @@
 
 using namespace std;
 
-template<class T>
-class symbol_array;
+/*template<class T>
+class SymbolArray;
 
 template<class T>
-wostream &operator<<(wostream &out, const symbol_array<T> &_symbol_array);
-
+wostream &operator<<(wostream &out, const SymbolArray<T> &_symbol_array);
+*/
 template<class T>
-class symbol_array {
+class SymbolArray {
 private:
     uint32_t _capacity{};
     uint32_t _count{};
@@ -30,37 +30,41 @@ private:
         _array = new T[_capacity];
         memset(_array, 0, _capacity * sizeof(T));
         memcpy(_array, _tmp_array, _old_capacity * sizeof(T));
-        cout << "DEBUG: call resize. New capacity :" << capacity() << endl;
+        //cout << "DEBUG: call resize. New capacity :" << capacity() << endl;
     }
 
 public:
     class Iterator;
 
-    explicit symbol_array(uint32_t _capacity = 10) : _capacity(_capacity) {
+    explicit SymbolArray(uint32_t _capacity = 10) : _capacity(_capacity) {
         _count = 0;
         _array = new T[_capacity];
         memset(_array, 0, _capacity * sizeof(T));
-        cout << "DEBUG: constructor: capacity = " << capacity() << endl;
+        //cout << "DEBUG: constructor: capacity = " << capacity() << endl;
     }
 
-    explicit symbol_array(const T* in, uint32_t capacity = 10) {
-        _capacity = capacity;
-        _array = new T[_capacity];
-        memcpy(_array, in, _capacity);
+    explicit SymbolArray(const T *symbols, uint32_t count) {
+        _array = new T[count];
+        memcpy(_array, symbols, sizeof(T) * count);
+        _count = count;
+        _capacity = count;
     }
 
-    symbol_array(const symbol_array &other) {
+    SymbolArray(const SymbolArray &other) {
         const auto newSize = std::min(sizeof(T) * other._capacity, sizeof(T) * _capacity);
+        _array = new T[newSize];
         memcpy(_array, other._array, newSize);
         _capacity = other._capacity;
         _count = other._count;
     }
 
-    symbol_array(symbol_array &&symbolArray) noexcept: _array(symbolArray._array),
-                                                       _capacity(symbolArray._capacity),
-                                                       _count(symbolArray._count) {}
+    SymbolArray(SymbolArray &&symbolArray) noexcept: _array(symbolArray._array),
+                                                     _capacity(symbolArray._capacity),
+                                                     _count(symbolArray._count) {
+        symbolArray._array = nullptr;
+    }
 
-    virtual ~symbol_array() {
+    virtual ~SymbolArray() {
         delete[] _array;
     }
 
@@ -87,7 +91,7 @@ public:
         return _array[index];
     }
 
-    const T * to_array() {
+    const T *to_array() {
         return _array;
     }
 
@@ -99,9 +103,9 @@ public:
         _count++;
     }
 
-    virtual symbol_array<wchar_t> convert_symbols(char a) = 0;
+    virtual SymbolArray<wchar_t>& convert_symbols(const SymbolArray<char>& symbol_array) = 0;
 
-    virtual symbol_array<char> convert_symbols(wchar_t a) = 0;
+    virtual const SymbolArray<char>& convert_symbols(const SymbolArray<wchar_t>& symbol_array) = 0;
 
     void erase(uint32_t index) {
         if (index >= _count) {
@@ -124,16 +128,16 @@ public:
         return at(index);
     }
 
-    symbol_array<T> operator+(symbol_array<T> &_symbol_array) {
+    const SymbolArray<T> & operator+(SymbolArray<T> &_symbol_array) {
         uint32_t _new_capacity = ceil(double(_count + _symbol_array._count) / 10) * 10;
-        symbol_array<T> _new_symbol_array(_new_capacity);
+        SymbolArray<T> _new_symbol_array(_new_capacity);
         memcpy(_new_symbol_array._array, _array, _count * sizeof(T));
         memcpy(_new_symbol_array._array + _count, _symbol_array._array, _symbol_array._count * sizeof(T));
         _new_symbol_array._count = _count + _symbol_array._count;
         return _new_symbol_array;
     }
 
-    void operator+=(symbol_array<T> &_symbol_array) {
+    void operator+=(SymbolArray<T> &_symbol_array) {
         uint32_t _new_capacity = ceil(double(_count + _symbol_array._count) / 10) * 10;
         if (_new_capacity >= _capacity) {
             resize(_new_capacity - _capacity);
@@ -142,12 +146,12 @@ public:
         _count += _symbol_array._count;
     }
 
-    friend wostream &operator
+    /*friend wostream &operator
     <<<>(
     wostream &out,
-    const symbol_array<T> &obj
+    const SymbolArray<T> &obj
     );
-
+*/
     class Iterator {
     private:
         T *_currElement;
@@ -209,12 +213,12 @@ public:
     };
 };
 
-template<class T>
-wostream &operator<<(wostream &out, const symbol_array<T> &_symbol_array) {
+/*template<class T>
+wostream &operator<<(wostream &out, const SymbolArray<T> &_symbol_array) {
     for (auto elem: _symbol_array) {
         out << elem;
     }
     return out;
-}
+}*/
 
-#endif //HW3_SYMBOLARRAY_CPP
+#endif //HW3_SYMBOLARRAY_H

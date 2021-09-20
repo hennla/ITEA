@@ -5,22 +5,32 @@
 #ifndef HW3_MYWSTRING_H
 #define HW3_MYWSTRING_H
 
-#include "mystring.h"
 #include <cstdlib>
-#include "symbolarray.cpp"
+#include "mystring.h"
+#include "symbolarray.h"
 
 
-class mywstring : public symbol_array<wchar_t> {
+class mywstring : public SymbolArray<wchar_t> {
 public:
-    mywstring(const wchar_t * _in, uint32_t capacity = 10): symbol_array<wchar_t>(_in, capacity){
+    mywstring(const wchar_t *_in, uint32_t capacity = 10) : SymbolArray<wchar_t>(_in, capacity) {
     };
 
-    ~mywstring(){}
+    ~mywstring() {}
 
-    mywstring convert_symbols(char a) override;
+    mywstring(const SymbolArray<wchar_t> &other);
 
-    mystring convert_symbols(wchar_t a) override;
+    mywstring(SymbolArray<wchar_t> &&symbolArray);
 
+    SymbolArray<wchar_t> &convert_symbols(const SymbolArray<char> &symbol_array) override;
+
+    const SymbolArray<char> &convert_symbols(const SymbolArray<wchar_t> &symbol_array) override;
+
+    friend ostream &operator<<(ostream &out, const mywstring &_symbol_array) {
+        for (auto elem: _symbol_array) {
+            out << elem;
+        }
+        return out;
+    }
 };
 
 
