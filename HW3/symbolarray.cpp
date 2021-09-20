@@ -17,8 +17,8 @@ wostream &operator<<(wostream &out, const symbol_array<T> &_symbol_array);
 template<class T>
 class symbol_array {
 private:
-    uint32_t _capacity;
-    uint32_t _count;
+    uint32_t _capacity{};
+    uint32_t _count{};
     T *_array;
 
     void resize(uint32_t _new_capacity = 10) {
@@ -36,11 +36,17 @@ private:
 public:
     class Iterator;
 
-     explicit symbol_array(uint32_t _capacity = 10) : _capacity(_capacity) {
+    explicit symbol_array(uint32_t _capacity = 10) : _capacity(_capacity) {
         _count = 0;
         _array = new T[_capacity];
         memset(_array, 0, _capacity * sizeof(T));
         cout << "DEBUG: constructor: capacity = " << capacity() << endl;
+    }
+
+    explicit symbol_array(const T* in, uint32_t capacity = 10) {
+        _capacity = capacity;
+        _array = new T[_capacity];
+        memcpy(_array, in, _capacity);
     }
 
     symbol_array(const symbol_array &other) {
@@ -81,6 +87,10 @@ public:
         return _array[index];
     }
 
+    const T * to_array() {
+        return _array;
+    }
+
     void append(const T _elem) {
         if (_count == _capacity) {
             resize();
@@ -89,16 +99,9 @@ public:
         _count++;
     }
 
-    virtual void append(const T* _elem) {}
+    virtual symbol_array<wchar_t> convert_symbols(char a) = 0;
 
-    virtual symbol_array<wchar_t>& convert_symbols(const symbol_array<char> _symbol_array) {
-        symbol_array<wchar_t> return_value;
-        return return_value;
-     };
-    virtual symbol_array<char>& convert_symbols(const symbol_array<wchar_t> _symbol_array) {
-        symbol_array<char> return_value;
-        return return_value;
-    };
+    virtual symbol_array<char> convert_symbols(wchar_t a) = 0;
 
     void erase(uint32_t index) {
         if (index >= _count) {
@@ -122,7 +125,7 @@ public:
     }
 
     symbol_array<T> operator+(symbol_array<T> &_symbol_array) {
-        uint32_t _new_capacity = ceil(double (_count + _symbol_array._count) / 10) * 10;
+        uint32_t _new_capacity = ceil(double(_count + _symbol_array._count) / 10) * 10;
         symbol_array<T> _new_symbol_array(_new_capacity);
         memcpy(_new_symbol_array._array, _array, _count * sizeof(T));
         memcpy(_new_symbol_array._array + _count, _symbol_array._array, _symbol_array._count * sizeof(T));
@@ -131,12 +134,12 @@ public:
     }
 
     void operator+=(symbol_array<T> &_symbol_array) {
-        uint32_t _new_capacity = ceil(double (_count + _symbol_array._count) / 10) * 10;
+        uint32_t _new_capacity = ceil(double(_count + _symbol_array._count) / 10) * 10;
         if (_new_capacity >= _capacity) {
             resize(_new_capacity - _capacity);
         }
         memcpy(_array + _count, _symbol_array._array, _symbol_array._count * sizeof(T));
-        _count +=_symbol_array._count;
+        _count += _symbol_array._count;
     }
 
     friend wostream &operator
@@ -208,7 +211,7 @@ public:
 
 template<class T>
 wostream &operator<<(wostream &out, const symbol_array<T> &_symbol_array) {
-    for (auto elem : _symbol_array) {
+    for (auto elem: _symbol_array) {
         out << elem;
     }
     return out;

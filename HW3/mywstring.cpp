@@ -3,20 +3,20 @@
 //
 
 #include "mywstring.h"
-#include "mystring.h"
-#include <cstdlib>
 
-mywstring::mywstring(uint32_t capacity) : symbol_array(capacity) {}
 
-symbol_array<wchar_t> &mywstring::convert_symbols(const symbol_array<char> _symbol_array) {
+mywstring mywstring::convert_symbols(char a) {
     return *this;
 }
 
-symbol_array<char> &mywstring::convert_symbols(const symbol_array<wchar_t> _symbol_array) {
-    mystring _mystring;
+mystring mywstring::convert_symbols(wchar_t a) {
+    char * n_array = new char[this->capacity()];
+    if (std::wcstombs(n_array, this->to_array(), this->capacity()) == -1) {
+        throw runtime_error{"Conversion error"};
+    };
+    mystring mystr{n_array, this->capacity()};
 
-
-    return _mystring;
+    return mystr;
 }
 
 

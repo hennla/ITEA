@@ -1,22 +1,11 @@
 #include <iostream>
-#include "mystring.h"
 #include "mywstring.h"
 
 int main() {
-    std::string atr = "qwqwrqr";
     setlocale(LC_ALL, "ru");
-    mystring _mystring;
-    _mystring.append('a');
-    _mystring.append('k');
-    _mystring.append('w');
-    _mystring.append('R');
-    //_mystring.append(L'ы');
-   // _mystring.append(L'О');
-    _mystring.append('m');
-    wcout << _mystring << endl;
-    //mystring _mystring0 = _mystring.convert_symbols(_mystring);
-    //wcout << _mystring0 << endl;
-    //mystring _mystring = _mystring.wstring_to_string();
+    const wchar_t *test_ww = (L"Привет мир");
+    mywstring test_w{test_ww, 10};
 
-
+    mystring char_converted = test_w.convert_symbols(L'a');
+    std::cout << char_converted.at(0) << std::endl;
 }

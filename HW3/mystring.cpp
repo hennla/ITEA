@@ -3,15 +3,14 @@
 //
 
 #include "mystring.h"
-#include "mywstring.h"
 
-symbol_array<char> & mystring::convert_symbols(const symbol_array<wchar_t> _symbol_array) {
-    return *this;
+mywstring mystring::convert_symbols(char a) {
+    auto * n_array = new wchar_t [this->capacity()];
+    mywstring mywstr{n_array,10};
+    return mywstr;
 }
 
-symbol_array<wchar_t> & mystring::convert_symbols(const symbol_array<char>_symbol_array) {
-    mywstring _mywstring;
-
-    return _mywstring;
+mystring mystring::convert_symbols(wchar_t a){
+    return *this;
 }
 
