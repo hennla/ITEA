@@ -12,7 +12,7 @@ SymbolArray<wchar_t> mywstring::to_wchar() {
 
  SymbolArray<char> mywstring::to_char() {
      const wchar_t* warray = this->to_array();
-     char * array = new char[this->size()];
+     auto * array = new char[this->size()];
      uint32_t length = std::wcstombs(array, warray, this->size());
      mystring _mystring{array, length};
      delete[] array;

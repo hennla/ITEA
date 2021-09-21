@@ -22,7 +22,7 @@ public:
 
     SymbolArray<char> to_char() override;
 
-    friend ostream &operator<<(ostream &out, const mywstring &_symbol_array) {
+    friend wostream &operator<<(wostream &out, const mywstring &_symbol_array) {
         for (auto elem: _symbol_array) {
             out << elem;
         }

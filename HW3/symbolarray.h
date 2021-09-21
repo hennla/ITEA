@@ -49,14 +49,13 @@ public:
     }
 
     SymbolArray(const SymbolArray &other) {
-        const auto newSize = std::min(sizeof(T) * other._capacity, sizeof(T) * _capacity);
-        _array = new T[newSize];
-        memcpy(_array, other._array, newSize);
         _capacity = other._capacity;
         _count = other._count;
+        _array = new T[_capacity];
+        memcpy(_array, other._array, sizeof(T) * _capacity);
     }
 
-    SymbolArray(SymbolArray &&symbolArray) : _array(symbolArray._array), _capacity(symbolArray._capacity),
+    SymbolArray(SymbolArray &&symbolArray)  noexcept : _array(symbolArray._array), _capacity(symbolArray._capacity),
                                                      _count(symbolArray._count) {
     }
 

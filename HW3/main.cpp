@@ -9,5 +9,12 @@ int main() {
     mystring test{test_c, 13};
     mystring   char_converted = test_w.to_char();
     mywstring  wchar_converted = test_w.to_wchar();
-    std::cout << char_converted << std::endl;
+    std::cout<<"mywstring"<<std::endl;
+    std::cout << "char: " << char_converted << std::endl;
+    std::wcout << "wchar_t: " << wchar_converted << std::endl;
+    mystring char_converted0 = test.to_char();
+    mywstring  wchar_converted0 = test.to_wchar();
+    std::cout<<"mystring"<<std::endl;
+    std::cout<< "char: " << char_converted0 << std::endl;
+    std::wcout << "wchar_t: " << wchar_converted0 << std::endl;
 }

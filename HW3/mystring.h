@@ -11,8 +11,7 @@
 
 class mystring : public SymbolArray<char> {
 public:
-    mystring(const char *_in, uint32_t capacity = 10) : SymbolArray(_in, capacity) {
-    };
+    mystring(const char *_in, uint32_t capacity = 10) : SymbolArray(_in, capacity) {};
 
     mystring(const SymbolArray<char> &other);
 
