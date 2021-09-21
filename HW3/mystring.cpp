@@ -4,7 +4,7 @@
 
 #include "mystring.h"
 
-SymbolArray<wchar_t> &mystring::convert_symbols(const SymbolArray<char> &symbol_array) {
+SymbolArray<wchar_t> mystring::to_wchar() {
     mywstring _mywstring{L""};
     for (auto elem: *this) {
         if (elem < 128) {
@@ -12,12 +12,12 @@ SymbolArray<wchar_t> &mystring::convert_symbols(const SymbolArray<char> &symbol_
         } else {
             _mywstring.append(L'?');
         }
-        return _mywstring;
     }
+    return _mywstring;
 }
 
-    SymbolArray<char> &mystring::convert_symbols(const SymbolArray<wchar_t> &symbol_array) {
-        return *this;
+    SymbolArray<char> mystring::to_char() {
+        return mystring{*this};
     }
 
     mystring::mystring(

@@ -16,7 +16,7 @@ wostream &operator<<(wostream &out, const SymbolArray<T> &_symbol_array);
 */
 template<class T>
 class SymbolArray {
-private:
+protected:
     uint32_t _capacity{};
     uint32_t _count{};
     T *_array;
@@ -30,7 +30,6 @@ private:
         _array = new T[_capacity];
         memset(_array, 0, _capacity * sizeof(T));
         memcpy(_array, _tmp_array, _old_capacity * sizeof(T));
-        //cout << "DEBUG: call resize. New capacity :" << capacity() << endl;
     }
 
 public:
@@ -40,7 +39,6 @@ public:
         _count = 0;
         _array = new T[_capacity];
         memset(_array, 0, _capacity * sizeof(T));
-        //cout << "DEBUG: constructor: capacity = " << capacity() << endl;
     }
 
     explicit SymbolArray(const T *symbols, uint32_t count) {
@@ -58,10 +56,8 @@ public:
         _count = other._count;
     }
 
-    SymbolArray(SymbolArray &&symbolArray) noexcept: _array(symbolArray._array),
-                                                     _capacity(symbolArray._capacity),
+    SymbolArray(SymbolArray &&symbolArray) : _array(symbolArray._array), _capacity(symbolArray._capacity),
                                                      _count(symbolArray._count) {
-        symbolArray._array = nullptr;
     }
 
     virtual ~SymbolArray() {
@@ -103,9 +99,13 @@ public:
         _count++;
     }
 
-    virtual SymbolArray<wchar_t>& convert_symbols(const SymbolArray<char>& symbol_array) = 0;
+    virtual  SymbolArray<wchar_t> to_wchar() {
+        return SymbolArray<wchar_t>{10};
+    };
 
-    virtual const SymbolArray<char>& convert_symbols(const SymbolArray<wchar_t>& symbol_array) = 0;
+    virtual  SymbolArray<char> to_char() {
+        return SymbolArray<char>{10};
+    };
 
     void erase(uint32_t index) {
         if (index >= _count) {

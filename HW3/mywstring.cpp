@@ -4,22 +4,21 @@
 
 #include "mywstring.h"
 
-SymbolArray<wchar_t>& mywstring::convert_symbols(const SymbolArray<char>& symbol_array) {
-    return *this;
+mywstring::mywstring(const SymbolArray<wchar_t> &other) : SymbolArray(other) {}
+
+SymbolArray<wchar_t> mywstring::to_wchar() {
+    return SymbolArray{*this};
 }
- const SymbolArray<char>& mywstring::convert_symbols(const SymbolArray<wchar_t>& symbol_array) {
+
+ SymbolArray<char> mywstring::to_char() {
      const wchar_t* warray = this->to_array();
      char * array = new char[this->size()];
      uint32_t length = std::wcstombs(array, warray, this->size());
      mystring _mystring{array, length};
      delete[] array;
-
-     return std::move(_mystring);
+     return _mystring;
 }
 
-mywstring::mywstring(const SymbolArray<wchar_t> &other) : SymbolArray(other) {}
-
-mywstring::mywstring(SymbolArray<wchar_t> &&symbolArray) : SymbolArray(symbolArray) {}
 
 
 

@@ -20,9 +20,9 @@ public:
 
     ~mystring() {}
 
-    SymbolArray<wchar_t> &convert_symbols(const SymbolArray<char> &symbol_array) override;
+    SymbolArray<wchar_t> to_wchar() override;
 
-    SymbolArray<char> &convert_symbols(const SymbolArray<wchar_t> &symbol_array) override;
+    SymbolArray<char> to_char() override;
 
     friend ostream &operator<<(ostream &out, const mystring &_symbol_array) {
         for (auto elem: _symbol_array) {
