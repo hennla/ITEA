@@ -6,8 +6,8 @@
 
 class Media {
 public:
-    void addMediaSharing(std::ostream &mediaSharing) {
-        mediaSharingVector.push_back(&mediaSharing);
+    void addMediaSharing(const std::shared_ptr<std::ostream>& mediaSharing) {
+        mediaSharingVector.push_back(mediaSharing);
     }
 
     void print(const std::string& mediaString) {
@@ -17,7 +17,7 @@ public:
     }
 
 protected:
-    std::vector<std::ostream *> mediaSharingVector;
+    std::vector<std::shared_ptr<std::ostream>> mediaSharingVector;
 
     virtual std::string transformMedia(std::string mediaString) = 0;
 };
@@ -69,17 +69,17 @@ private:
 int main() {
     std::ofstream fileOut(R"(D:\GIT\ITEA\HW5\SomeNews.txt)");
     UpperRegisterMedia upperRegisterMedia;
-    upperRegisterMedia.addMediaSharing(std::cout);
-    upperRegisterMedia.addMediaSharing(std::cerr);
-    upperRegisterMedia.addMediaSharing(fileOut);
+    upperRegisterMedia.addMediaSharing(std::shared_ptr<std::ostream>(&std::cout, [](void*) {}));
+    upperRegisterMedia.addMediaSharing(std::shared_ptr<std::ostream>(&std::cerr, [](void*) {}));
+    upperRegisterMedia.addMediaSharing(std::shared_ptr<std::ostream>(&fileOut, [](void*) {}));
 
     UnderscoreSplitterMedia underscoreSplitterMedia;
 
-    underscoreSplitterMedia.addMediaSharing(fileOut);
-    underscoreSplitterMedia.addMediaSharing(std::cout);
+    underscoreSplitterMedia.addMediaSharing(std::shared_ptr<std::ostream>(&fileOut, [](void*) {}));
+    underscoreSplitterMedia.addMediaSharing(std::shared_ptr<std::ostream>(&std::cout, [](void*) {}));
 
     OriginalMedia originalMedia;
-    originalMedia.addMediaSharing(std::cout);
+    originalMedia.addMediaSharing(std::shared_ptr<std::ostream>(&std::cout, [](void*) {}));
 
     ZMI zmi;
     zmi.addZmi(std::make_shared<UpperRegisterMedia>(upperRegisterMedia));
