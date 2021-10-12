@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/GIT/ITEA/HW10/server/main.cpp
+WinSock2.h
+-
+WS2tcpip.h
+-
+iostream
+-
+thread
+-
+vector
+-
+mutex
+-
+atomic
+-
+
